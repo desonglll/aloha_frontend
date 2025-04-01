@@ -1,2 +1,7 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<div>
+	<p class="text-2xl font-bold">Hi There!</p>
+	<p class="break-after-column">Let's dive into TailwindCSS and Svelte.</p>
+	<p>Maybe we can live without...</p>
+	<p>Look. If you think this is...</p>
+</div>
+
