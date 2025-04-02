@@ -8,11 +8,6 @@
 	if (data.userGroups) {
 		userGroups = data.userGroups;
 	}
-	console.log(data.userGroups);
 </script>
-
-<h2>User Group</h2>
-
-
 
 <Table groupData={userGroups} />

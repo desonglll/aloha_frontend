@@ -1,4 +1,4 @@
-import axios from '$lib/axios';
+import axios from 'axios';
 
 export interface UserGroup {
 	id: string;
@@ -7,11 +7,11 @@ export interface UserGroup {
 
 export const load = async () => {
 	try {
-		const response = await axios.get('http://localhost:8080/user_groups');
+		const response = await axios.get('user_groups');
 
 		if (response.status === 200) {
 			return {
-				userGroups: response.data as UserGroup[],
+				userGroups: response.data as UserGroup[]
 			};
 		} else {
 			return {
