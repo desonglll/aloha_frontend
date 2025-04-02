@@ -6,7 +6,7 @@
 		{ name: 'UserGroup', url: '/user_group' }
 	];
 </script>
-<div class="w-full">
+<div class="w-full grid">
 	<nav class="px-3 py-3 bg-amber-100">
 		{#each nav as item (item.name)}
 			<button

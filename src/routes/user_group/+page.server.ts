@@ -1,13 +1,17 @@
 import axios from '$lib/axios';
-import type { PageLoad } from '../../../.svelte-kit/types/src/routes/user_group/$types';
 
-export const load: PageLoad = async () => {
+export interface UserGroup {
+	id: string;
+	group_name: string;
+}
+
+export const load = async () => {
 	try {
-		const response = await axios.get('http://localhost:8888');
+		const response = await axios.get('http://localhost:8080/user_groups');
 
 		if (response.status === 200) {
 			return {
-				userGroups: response.data
+				userGroups: response.data as UserGroup[],
 			};
 		} else {
 			return {
