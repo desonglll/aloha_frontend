@@ -5,6 +5,7 @@ import { userService } from "../services/userService.ts";
 import { motion, AnimatePresence } from "npm:framer-motion@^11.0.8";
 import { userGroupService } from "../services/userGroupService.ts";
 import { UserGroup } from "../types/userGroup.ts";
+import Pagination from "../components/Pagination.tsx";
 
 const Users: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -112,12 +113,9 @@ const Users: React.FC = () => {
     }
   };
 
-  const handlePageSizeChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const newSize = parseInt(event.target.value);
-    setItemsPerPage(newSize);
-    setCurrentPage(1); // Reset to first page when changing page size
+  const handlePageSizeChange = (size: number) => {
+    setItemsPerPage(size);
+    setCurrentPage(1);
   };
 
   // Calculate total pages from pagination info
@@ -255,73 +253,15 @@ const Users: React.FC = () => {
                 </table>
               </div>
 
-              {/* Pagination and Page Size Selector */}
-              <div className="flex justify-between items-center mt-6">
-                <motion.div
-                  initial="hidden"
-                  animate="visible"
-                  variants={fadeIn}
-                  className="flex items-center space-x-2"
-                >
-                  <span className="text-sm text-gray-700">Show</span>
-                  <select
-                    value={itemsPerPage}
-                    onChange={handlePageSizeChange}
-                    className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
-                  >
-                    {pageSizeOptions.map((size) => (
-                      <option key={size} value={size}>
-                        {size}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="text-sm text-gray-700">entries</span>
-                </motion.div>
-
-                <motion.div
-                  initial="hidden"
-                  animate="visible"
-                  variants={fadeIn}
-                >
-                  <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setCurrentPage((prev) => Math.max(prev - 1, 1))
-                      }
-                      disabled={currentPage === 1}
-                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      Previous
-                    </button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                      (page) => (
-                        <button
-                          type="button"
-                          key={page}
-                          onClick={() => setCurrentPage(page)}
-                          className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium transition-colors duration-200 ${
-                            currentPage === page
-                              ? "z-10 bg-indigo-50 border-indigo-500 text-indigo-600"
-                              : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
-                          }`}
-                        >
-                          {page}
-                        </button>
-                      )
-                    )}
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                      }
-                      disabled={currentPage === totalPages}
-                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      Next
-                    </button>
-                  </nav>
-                </motion.div>
+              {/* Pagination */}
+              <div className="mt-4">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(pagination.total / itemsPerPage)}
+                  onPageChange={setCurrentPage}
+                  itemsPerPage={itemsPerPage}
+                  onItemsPerPageChange={handlePageSizeChange}
+                />
               </div>
             </>
           )}

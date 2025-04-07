@@ -60,7 +60,7 @@ const AnimatedRoutes = () => {
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-100 overflow-y-scroll">
         <Navbar />
         <AnimatedRoutes />
         <HealthCheck />
