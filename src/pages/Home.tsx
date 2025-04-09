@@ -1,118 +1,209 @@
-import React from "react";
-import Layout from "../components/Layout.tsx";
+import React, { useEffect, useState, useCallback } from "react";
+import type { ComponentType } from "react";
+import { FiUsers, FiUserCheck, FiLock, FiTrendingUp } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import Card from "../components/ui/Card";
 
-const Home: React.FC = () => {
-  return (
-    <Layout>
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
+// Stats card component
+const StatCard = ({
+  title,
+  value,
+  icon: Icon,
+  trend = 0,
+  linkTo,
+}: {
+  title: string;
+  value: number;
+  icon: ComponentType<{ size?: number }>;
+  trend?: number;
+  linkTo: string;
+}) => (
+  <Link to={linkTo} className="block transition-transform hover:scale-105">
+    <Card className="h-full">
+      <div className="flex items-center">
+        <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+          <Icon size={24} />
         </div>
-
-        {/* Content */}
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Stats Card */}
-            <div className="bg-blue-50 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-blue-600">
-                    Total Users
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">0</p>
-                </div>
-                <div className="bg-blue-100 rounded-full p-3">
-                  <svg
-                    className="w-6 h-6 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Stats Card */}
-            <div className="bg-green-50 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-green-600">
-                    User Groups
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">0</p>
-                </div>
-                <div className="bg-green-100 rounded-full p-3">
-                  <svg
-                    className="w-6 h-6 text-green-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Stats Card */}
-            <div className="bg-purple-50 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-purple-600">
-                    System Status
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">
-                    Active
-                  </p>
-                </div>
-                <div className="bg-purple-100 rounded-full p-3">
-                  <svg
-                    className="w-6 h-6 text-purple-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-              </div>
+        <div>
+          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-2xl font-semibold text-gray-900">{value}</p>
+        </div>
+        {trend !== 0 && (
+          <div
+            className={`ml-auto ${
+              trend > 0 ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            <div className="flex items-center">
+              <FiTrendingUp
+                className={trend < 0 ? "transform rotate-180" : ""}
+              />
+              <span className="ml-1 text-sm font-medium">
+                {Math.abs(trend)}%
+              </span>
             </div>
           </div>
-
-          {/* Welcome Message */}
-          <div className="mt-8 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Welcome to Aloha Admin
-            </h2>
-            <p className="text-gray-600">
-              This is your admin dashboard. Use the sidebar navigation to manage
-              users and user groups.
-            </p>
-          </div>
-        </div>
+        )}
       </div>
-    </Layout>
+    </Card>
+  </Link>
+);
+
+const Home = () => {
+  const [stats, setStats] = useState({
+    users: 0,
+    groups: 0,
+    permissions: 0,
+  });
+
+  const fetchStats = useCallback(async () => {
+    // This would typically fetch data from an API
+    // For demo purposes, set some example values
+    setStats({
+      users: 128,
+      groups: 12,
+      permissions: 36,
+    });
+  }, []);
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <p className="mt-1 text-gray-600">
+          Welcome to the Aloha platform administration dashboard
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <StatCard
+          title="Total Users"
+          value={stats.users}
+          icon={FiUsers}
+          trend={8}
+          linkTo="/users"
+        />
+        <StatCard
+          title="User Groups"
+          value={stats.groups}
+          icon={FiUserCheck}
+          trend={-3}
+          linkTo="/user-groups"
+        />
+        <StatCard
+          title="Permissions"
+          value={stats.permissions}
+          icon={FiLock}
+          trend={12}
+          linkTo="/permissions"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Card title="Recent Activity">
+          <div className="space-y-4">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold">
+                  JS
+                </div>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-900">
+                  John Smith added a new user
+                </p>
+                <p className="text-sm text-gray-500">2 hours ago</p>
+              </div>
+            </div>
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold">
+                  AM
+                </div>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-900">
+                  Alice Miller modified permissions
+                </p>
+                <p className="text-sm text-gray-500">5 hours ago</p>
+              </div>
+            </div>
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white text-sm font-bold">
+                  RJ
+                </div>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-900">
+                  Robert Johnson created a new group
+                </p>
+                <p className="text-sm text-gray-500">Yesterday</p>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        <Card title="System Status">
+          <div className="space-y-4">
+            <div>
+              <div className="flex justify-between mb-1">
+                <span className="text-sm font-medium text-gray-700">
+                  CPU Usage
+                </span>
+                <span className="text-sm font-medium text-gray-700">28%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-blue-500 h-2 rounded-full"
+                  style={{ width: "28%" }}
+                />
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between mb-1">
+                <span className="text-sm font-medium text-gray-700">
+                  Memory Usage
+                </span>
+                <span className="text-sm font-medium text-gray-700">62%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-blue-500 h-2 rounded-full"
+                  style={{ width: "62%" }}
+                />
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between mb-1">
+                <span className="text-sm font-medium text-gray-700">
+                  Disk Space
+                </span>
+                <span className="text-sm font-medium text-gray-700">45%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-blue-500 h-2 rounded-full"
+                  style={{ width: "45%" }}
+                />
+              </div>
+            </div>
+            <div className="pt-2">
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded-full bg-green-500 mr-2" />
+                <span className="text-sm text-gray-700">
+                  All systems operational
+                </span>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </div>
   );
 };
 
