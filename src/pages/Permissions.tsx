@@ -1,41 +1,15 @@
 import React, { useState, useEffect } from "react";
 import {
-  UserGroup,
-  UserGroupFormData,
+  Permission,
+  PermissionFormData,
   PaginationInfo,
-} from "../types/userGroup.ts";
-import UserGroupModal from "../components/UserGroupModal.tsx";
-import { userGroupService } from "../services/apiService.ts";
-import Pagination from "../components/Pagination.tsx";
+} from "../types/permission.ts";
+import PermissionModal from "../components/PermissionModal.tsx";
+import { permissionService } from "../services/apiService.ts";
 import Layout from "../components/Layout.tsx";
 
-const formatDateTime = (dateArray: number[]): string => {
-  if (!dateArray || dateArray.length < 6) return "Invalid date";
-
-  // SQLx OffsetDateTime format: [year, month, day, hour, minute, second, ...]
-  const [year, month, day, hour, minute, second] = dateArray;
-
-  // Create a Date object (month is 0-based in JavaScript)
-  const date = new Date(year, month - 1, day, hour, minute, second);
-
-  // Format the date
-  return date.toLocaleString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-};
-
-const UserGroups: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState<UserGroup | null>(null);
-  const [userGroups, setUserGroups] = useState<UserGroup[]>([]);
+const Permissions: React.FC = () => {
+  const [permissions, setPermissions] = useState<Permission[]>([]);
   const [pagination, setPagination] = useState<PaginationInfo>({
     page: 1,
     size: 10,
@@ -43,86 +17,98 @@ const UserGroups: React.FC = () => {
     prev_page: null,
     next_page: null,
   });
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPermission, setSelectedPermission] =
+    useState<Permission | null>(null);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // Fetch user groups from API
-  const fetchUserGroups = async (page: number, size: number) => {
+  const pageSizeOptions = [5, 10, 20, 50, 100];
+
+  useEffect(() => {
+    fetchPermissions();
+  }, [pagination.page, itemsPerPage]);
+
+  const fetchPermissions = async () => {
     try {
-      setLoading(true);
+      setIsLoading(true);
       setError(null);
-      const response = await userGroupService.fetchUserGroups(page, size);
-      setUserGroups(response.data);
+      const response = await permissionService.fetchPermissions(
+        pagination.page,
+        itemsPerPage
+      );
+      setPermissions(response.data);
       setPagination(response.pagination);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch user groups"
-      );
-      console.error("Error fetching user groups:", err);
+      setError("Failed to fetch permissions. Please try again later.");
+      console.error("Error fetching permissions:", err);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  // Load data when page or size changes
-  useEffect(() => {
-    fetchUserGroups(currentPage, itemsPerPage);
-  }, [currentPage, itemsPerPage]);
-
-  const handleEdit = (group: UserGroup) => {
-    setSelectedGroup(group);
-    setShowEditModal(true);
+  const handleAddPermission = () => {
+    setSelectedPermission(null);
+    setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (
-      globalThis.confirm("Are you sure you want to delete this user group?")
-    ) {
+  const handleEditPermission = (permission: Permission) => {
+    setSelectedPermission(permission);
+    setIsModalOpen(true);
+  };
+
+  const handleDeletePermission = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this permission?")) {
       try {
-        await userGroupService.deleteUserGroup(id);
-        // Refresh the data after deletion
-        fetchUserGroups(currentPage, itemsPerPage);
+        await permissionService.deletePermission(id);
+        fetchPermissions();
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to delete user group"
-        );
-        console.error("Error deleting user group:", err);
+        setError("Failed to delete permission. Please try again later.");
+        console.error("Error deleting permission:", err);
       }
     }
   };
 
-  const handleAdd = async (data: UserGroupFormData) => {
+  const handleModalSubmit = async (formData: PermissionFormData) => {
     try {
-      await userGroupService.createUserGroup(data);
-      setShowAddModal(false);
-      // Refresh the data after adding
-      fetchUserGroups(currentPage, itemsPerPage);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to add user group");
-      console.error("Error adding user group:", err);
-    }
-  };
-
-  const handleEditSubmit = async (data: UserGroupFormData) => {
-    if (selectedGroup) {
-      try {
-        await userGroupService.updateUserGroup(selectedGroup.id, data);
-        setShowEditModal(false);
-        setSelectedGroup(null);
-        // Refresh the data after updating
-        fetchUserGroups(currentPage, itemsPerPage);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to update user group"
-        );
-        console.error("Error updating user group:", err);
+      if (selectedPermission) {
+        await permissionService.updatePermission(selectedPermission.id, {
+          ...selectedPermission,
+          name: formData.name,
+          description: formData.description || null,
+        });
+      } else {
+        await permissionService.createPermission(formData);
       }
+      setIsModalOpen(false);
+      fetchPermissions();
+    } catch (err) {
+      setError("Failed to save permission. Please try again later.");
+      console.error("Error saving permission:", err);
     }
   };
 
-  const handlePageSizeChange = (size: number) => {
-    setItemsPerPage(size);
-    setCurrentPage(1);
+  const handlePageChange = (newPage: number) => {
+    setPagination((prev: PaginationInfo) => ({ ...prev, page: newPage }));
+  };
+
+  const handlePageSizeChange = (newSize: number) => {
+    setItemsPerPage(newSize);
+    setPagination((prev: PaginationInfo) => ({ ...prev, page: 1 }));
+  };
+
+  const formatDateTime = (dateArray: number[]) => {
+    if (!dateArray || dateArray.length < 6) return "N/A";
+    const [year, month, day, hour, minute, second] = dateArray;
+    return new Date(
+      year,
+      month - 1,
+      day,
+      hour,
+      minute,
+      second
+    ).toLocaleString();
   };
 
   return (
@@ -130,11 +116,11 @@ const UserGroups: React.FC = () => {
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-gray-900">User Groups</h1>
+          <h1 className="text-xl font-bold text-gray-900">Permissions</h1>
           <button
             type="button"
-            onClick={() => setShowAddModal(true)}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 flex items-center"
+            onClick={handleAddPermission}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors duration-300 flex items-center"
           >
             <svg
               className="w-5 h-5 mr-1"
@@ -150,7 +136,7 @@ const UserGroups: React.FC = () => {
                 d="M12 4v16m8-8H4"
               />
             </svg>
-            Add Group
+            Add Permission
           </button>
         </div>
 
@@ -178,7 +164,7 @@ const UserGroups: React.FC = () => {
         )}
 
         {/* Loading State */}
-        {loading ? (
+        {isLoading ? (
           <div className="flex justify-center items-center h-40">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
           </div>
@@ -193,7 +179,10 @@ const UserGroups: React.FC = () => {
                       ID
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Group Name
+                      Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Description
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Created At
@@ -204,35 +193,38 @@ const UserGroups: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {userGroups.length === 0 ? (
+                  {permissions.length === 0 ? (
                     <tr>
                       <td
-                        colSpan={4}
+                        colSpan={5}
                         className="px-6 py-8 text-center text-gray-500"
                       >
-                        No user groups found. Create your first one!
+                        No permissions found. Create your first one!
                       </td>
                     </tr>
                   ) : (
-                    userGroups.map((group) => (
+                    permissions.map((permission) => (
                       <tr
-                        key={group.id}
+                        key={permission.id}
                         className="transition-all duration-300 ease-in-out hover:bg-gray-50"
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {group.id}
+                          {permission.id}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap font-medium">
-                          {group.group_name}
+                          {permission.name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatDateTime(group.created_at)}
+                          {permission.description || "-"}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {formatDateTime(permission.created_at)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex space-x-3">
                             <button
                               type="button"
-                              onClick={() => handleEdit(group)}
+                              onClick={() => handleEditPermission(permission)}
                               className="text-blue-600 hover:text-blue-800 transition-colors duration-300 flex items-center"
                             >
                               <svg
@@ -253,7 +245,9 @@ const UserGroups: React.FC = () => {
                             </button>
                             <button
                               type="button"
-                              onClick={() => handleDelete(group.id)}
+                              onClick={() =>
+                                handleDeletePermission(permission.id)
+                              }
                               className="text-red-600 hover:text-red-800 transition-colors duration-300 flex items-center"
                             >
                               <svg
@@ -283,39 +277,71 @@ const UserGroups: React.FC = () => {
 
             {/* Pagination */}
             <div className="px-6 py-4 border-t border-gray-200">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={Math.ceil(pagination.total / itemsPerPage)}
-                onPageChange={setCurrentPage}
-                itemsPerPage={itemsPerPage}
-                onItemsPerPageChange={handlePageSizeChange}
-              />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="text-sm text-gray-700 mr-2">Show</span>
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) =>
+                      handlePageSizeChange(Number(e.target.value))
+                    }
+                    className="border border-gray-300 rounded px-2 py-1 text-sm"
+                  >
+                    {pageSizeOptions.map((size) => (
+                      <option key={size} value={size}>
+                        {size}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="text-sm text-gray-700 ml-2">entries</span>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => handlePageChange(pagination.page - 1)}
+                    disabled={!pagination.prev_page}
+                    className={`px-3 py-1 rounded ${
+                      pagination.prev_page
+                        ? "bg-blue-500 text-white hover:bg-blue-600"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    }`}
+                  >
+                    Previous
+                  </button>
+                  <span className="text-sm text-gray-700">
+                    Page {pagination.page} of{" "}
+                    {Math.ceil(pagination.total / itemsPerPage)}
+                  </span>
+                  <button
+                    onClick={() => handlePageChange(pagination.page + 1)}
+                    disabled={!pagination.next_page}
+                    className={`px-3 py-1 rounded ${
+                      pagination.next_page
+                        ? "bg-blue-500 text-white hover:bg-blue-600"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    }`}
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
             </div>
           </>
         )}
       </div>
 
-      {/* Add Modal */}
-      <UserGroupModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        onSubmit={handleAdd}
-        mode="add"
-      />
-
-      {/* Edit Modal */}
-      <UserGroupModal
-        isOpen={showEditModal}
+      <PermissionModal
+        isOpen={isModalOpen}
         onClose={() => {
-          setShowEditModal(false);
-          setSelectedGroup(null);
+          setIsModalOpen(false);
+          setSelectedPermission(null);
         }}
-        onSubmit={handleEditSubmit}
-        group={selectedGroup}
-        mode="edit"
+        onSubmit={handleModalSubmit}
+        permission={selectedPermission}
+        mode={selectedPermission ? "edit" : "add"}
       />
     </Layout>
   );
 };
 
-export default UserGroups;
+export default Permissions;

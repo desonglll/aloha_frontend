@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { User, UserFormData } from "../types/user.ts";
 import { UserGroup } from "../types/userGroup.ts";
-import { userGroupService } from "../services/userGroupService.ts";
+import { userGroupService } from "../services/apiService.ts";
 import { motion, AnimatePresence } from "npm:framer-motion@^11.0.8";
 
 interface UserModalProps {

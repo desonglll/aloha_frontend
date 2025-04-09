@@ -1,10 +1,12 @@
 import { UUID } from "./common.ts";
+import { UserGroup } from "./userGroup.ts";
 
 export interface User {
   id: UUID;
   username: string;
-  created_at: string;
   user_group_id?: UUID;
+  user_group?: UserGroup;
+  created_at: number[];
 }
 
 export interface UserFormData {

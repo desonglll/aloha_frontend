@@ -5,13 +5,14 @@ import {
   useLocation,
 } from "react-router-dom";
 import { AnimatePresence } from "npm:framer-motion@^11.0.8";
-import Navbar from "./components/Navbar.tsx";
 import Home from "./pages/Home.tsx";
 import About from "./pages/About.tsx";
 import UserGroups from "./pages/UserGroups.tsx";
 import HealthCheck from "./components/HealthCheck.tsx";
 import PageTransition from "./components/PageTransition.tsx";
 import Users from "./pages/Users.tsx";
+import Permissions from "./pages/Permissions.tsx";
+import GroupPermissions from "./pages/GroupPermissions.tsx";
 
 // Wrapper component to use useLocation hook
 const AnimatedRoutes = () => {
@@ -52,6 +53,22 @@ const AnimatedRoutes = () => {
             </PageTransition>
           }
         />
+        <Route
+          path="/permissions"
+          element={
+            <PageTransition>
+              <Permissions />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/group-permissions"
+          element={
+            <PageTransition>
+              <GroupPermissions />
+            </PageTransition>
+          }
+        />
       </Routes>
     </AnimatePresence>
   );
@@ -59,9 +76,13 @@ const AnimatedRoutes = () => {
 
 function App() {
   return (
-    <Router>
+    <Router
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <div className="min-h-screen bg-gray-100 overflow-y-scroll">
-        <Navbar />
         <AnimatedRoutes />
         <HealthCheck />
       </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { userGroupService } from "../services/userGroupService.ts";
+import { userGroupService } from "../services/apiService.ts";
 
 const HealthCheck: React.FC = () => {
   const [isHealthy, setIsHealthy] = useState<boolean | null>(null);
@@ -9,6 +9,7 @@ const HealthCheck: React.FC = () => {
     setIsChecking(true);
     try {
       const healthy = await userGroupService.healthCheck();
+
       setIsHealthy(healthy);
     } catch (error) {
       console.error("Health check failed:", error);

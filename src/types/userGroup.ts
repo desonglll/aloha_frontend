@@ -1,6 +1,7 @@
 export interface UserGroup {
   id: string;
   group_name: string;
+  created_at: number[];
 }
 
 export interface UserGroupFormData {
