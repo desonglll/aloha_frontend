@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import type { ComponentType } from "react";
 import { FiUsers, FiUserCheck, FiLock, FiTrendingUp } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import Card from "../components/ui/Card";
+import Card from "../components/ui/Card.tsx";
 
 // Stats card component
 const StatCard = ({

@@ -59,6 +59,18 @@ export interface CreateGroupPermissionFormData {
   permission_id: string;
 }
 
+// User Permission models
+export interface UserPermission {
+  user_id: string;
+  permission_id: string;
+  created_at?: string;
+}
+
+export interface CreateUserPermissionFormData {
+  user_id: string;
+  permission_id: string;
+}
+
 // Pagination model
 export interface Pagination {
   total?: number | null;

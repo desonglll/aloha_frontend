@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Button from "../components/ui/Button";
+import Button from "../components/ui/Button.tsx";
 import { FiArrowLeft } from "react-icons/fi";
 
 const NotFound = () => {

@@ -1,14 +1,14 @@
 import { useEffect, useState, useCallback } from "react";
-import React from "react";
-import { FiEdit2, FiTrash2, FiPlus } from "react-icons/fi";
-import Card from "../components/ui/Card";
-import DataTable from "../components/ui/DataTable";
-import Button from "../components/ui/Button";
-import Modal from "../components/ui/Modal";
-import AddUserForm from "../components/forms/AddUserForm";
-import EditUserForm from "../components/forms/EditUserForm";
-import type { User, Pagination } from "../types/models";
-import { getAllUsers, deleteUser } from "../services/userService";
+import { FiEdit2, FiTrash2, FiPlus, FiShield } from "react-icons/fi";
+import Card from "../components/ui/Card.tsx";
+import DataTable from "../components/ui/DataTable.tsx";
+import Button from "../components/ui/Button.tsx";
+import Modal from "../components/ui/Modal.tsx";
+import AddUserForm from "../components/forms/AddUserForm.tsx";
+import EditUserForm from "../components/forms/EditUserForm.tsx";
+import ManageUserPermissionsForm from "../components/forms/ManageUserPermissionsForm.tsx";
+import type { User, Pagination } from "../types/models.ts";
+import { getAllUsers, deleteUser } from "../services/userService.ts";
 
 const Users = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -20,6 +20,7 @@ const Users = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isPermissionsModalOpen, setIsPermissionsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const fetchUsers = useCallback(async (page = 1, size = 10) => {
@@ -27,6 +28,7 @@ const Users = () => {
       setIsLoading(true);
       const response = await getAllUsers(page, size);
       setUsers(response.data);
+
       setPagination(
         response.pagination || { page, size, total: response.data.length }
       );
@@ -50,7 +52,7 @@ const Users = () => {
   };
 
   const handleDeleteUser = async (userId: string) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
+    if (globalThis.confirm("Are you sure you want to delete this user?")) {
       try {
         await deleteUser(userId);
         fetchUsers(pagination.page || 1, pagination.size || 10);
@@ -69,6 +71,11 @@ const Users = () => {
     setIsEditModalOpen(true);
   };
 
+  const handleManagePermissions = (user: User) => {
+    setSelectedUser(user);
+    setIsPermissionsModalOpen(true);
+  };
+
   const handleAddSuccess = () => {
     setIsAddModalOpen(false);
     fetchUsers(pagination.page || 1, pagination.size || 10);
@@ -80,6 +87,12 @@ const Users = () => {
     fetchUsers(pagination.page || 1, pagination.size || 10);
   };
 
+  const handlePermissionsSuccess = () => {
+    setIsPermissionsModalOpen(false);
+    setSelectedUser(null);
+    fetchUsers(pagination.page || 1, pagination.size || 10);
+  };
+
   const columns = [
     {
       header: "Username",
@@ -87,8 +100,7 @@ const Users = () => {
     },
     {
       header: "Created At",
-      accessor: (user: User) =>
-        user.created_at ? new Date(user.created_at).toLocaleString() : "-",
+      accessor: (user: User) => user.created_at,
     },
     {
       header: "Group",
@@ -144,6 +156,15 @@ const Users = () => {
               <Button
                 variant="ghost"
                 size="sm"
+                icon={<FiShield />}
+                aria-label="Manage permissions"
+                onClick={() => handleManagePermissions(user)}
+              >
+                Permissions
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 icon={<FiEdit2 />}
                 aria-label="Edit user"
                 onClick={() => handleEditUser(user)}
@@ -189,6 +210,27 @@ const Users = () => {
             onSuccess={handleEditSuccess}
             onCancel={() => {
               setIsEditModalOpen(false);
+              setSelectedUser(null);
+            }}
+          />
+        </Modal>
+      )}
+
+      {selectedUser && (
+        <Modal
+          isOpen={isPermissionsModalOpen}
+          onClose={() => {
+            setIsPermissionsModalOpen(false);
+            setSelectedUser(null);
+          }}
+          title="Manage User Permissions"
+          size="lg"
+        >
+          <ManageUserPermissionsForm
+            user={selectedUser}
+            onSuccess={handlePermissionsSuccess}
+            onCancel={() => {
+              setIsPermissionsModalOpen(false);
               setSelectedUser(null);
             }}
           />

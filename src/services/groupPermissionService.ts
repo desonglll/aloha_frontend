@@ -1,10 +1,10 @@
-import api from "./api";
-import { API_ENDPOINTS } from "../config/api.config";
+import api from "./api.ts";
+import { API_ENDPOINTS } from "../config/api.config.ts";
 import type {
   GroupPermission,
   CreateGroupPermissionFormData,
   ApiResponse,
-} from "../types/models";
+} from "../types/models.ts";
 
 interface GroupPermissionsParams {
   page?: number;
@@ -16,7 +16,7 @@ interface GroupPermissionsParams {
 /**
  * Get all group permissions with pagination and optional filtering
  */
-export const getAllGroupPermissions = async (
+export const getAllGroupPermissions = (
   params?: GroupPermissionsParams
 ): Promise<ApiResponse<GroupPermission[]>> => {
   if (params?.groupId) {
@@ -37,7 +37,7 @@ export const getAllGroupPermissions = async (
 /**
  * Get group permissions by group ID
  */
-export const getGroupPermissionsByGroupId = async (
+export const getGroupPermissionsByGroupId = (
   groupId: string
 ): Promise<ApiResponse<GroupPermission[]>> => {
   return api.get(API_ENDPOINTS.GROUP_PERMISSIONS.GET_BY_GROUP(groupId));
@@ -46,7 +46,7 @@ export const getGroupPermissionsByGroupId = async (
 /**
  * Get group permissions by permission ID
  */
-export const getGroupPermissionsByPermissionId = async (
+export const getGroupPermissionsByPermissionId = (
   permissionId: string
 ): Promise<ApiResponse<GroupPermission[]>> => {
   return api.get(
@@ -57,7 +57,7 @@ export const getGroupPermissionsByPermissionId = async (
 /**
  * Create new group permission
  */
-export const createGroupPermission = async (
+export const createGroupPermission = (
   groupPermissionData: CreateGroupPermissionFormData
 ): Promise<GroupPermission> => {
   return api.post(API_ENDPOINTS.GROUP_PERMISSIONS.CREATE, groupPermissionData);
@@ -66,7 +66,7 @@ export const createGroupPermission = async (
 /**
  * Delete group permission
  */
-export const deleteGroupPermission = async (
+export const deleteGroupPermission = (
   groupId: string,
   permissionId: string
 ): Promise<GroupPermission> => {
@@ -82,7 +82,7 @@ export const deleteGroupPermission = async (
 /**
  * Delete all permissions for a group
  */
-export const deleteGroupPermissionsByGroupId = async (
+export const deleteGroupPermissionsByGroupId = (
   groupId: string
 ): Promise<GroupPermission[]> => {
   return api.delete(API_ENDPOINTS.GROUP_PERMISSIONS.DELETE_BY_GROUP(groupId));
@@ -91,7 +91,7 @@ export const deleteGroupPermissionsByGroupId = async (
 /**
  * Delete all groups for a permission
  */
-export const deleteGroupPermissionsByPermissionId = async (
+export const deleteGroupPermissionsByPermissionId = (
   permissionId: string
 ): Promise<GroupPermission[]> => {
   return api.delete(

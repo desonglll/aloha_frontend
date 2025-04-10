@@ -45,6 +45,19 @@ export const API_ENDPOINTS = {
       `/api/group_permissions/permission/${permissionId}`,
   },
 
+  // User Permissions
+  USER_PERMISSIONS: {
+    GET_ALL: "/api/user_permissions",
+    GET_BY_USER: (userId: string) => `/api/user_permissions/user/${userId}`,
+    GET_BY_PERMISSION: (permissionId: string) =>
+      `/api/user_permissions/permission/${permissionId}`,
+    CREATE: "/api/user_permissions",
+    DELETE: "/api/user_permissions",
+    DELETE_BY_USER: (userId: string) => `/api/user_permissions/user/${userId}`,
+    DELETE_BY_PERMISSION: (permissionId: string) =>
+      `/api/user_permissions/permission/${permissionId}`,
+  },
+
   // Health Check
   HEALTH: "/health",
 };

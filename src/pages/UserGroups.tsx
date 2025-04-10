@@ -1,18 +1,17 @@
 import { useEffect, useState, useCallback } from "react";
-import React from "react";
 import { FiEdit2, FiTrash2, FiPlus, FiUsers, FiShield } from "react-icons/fi";
-import Card from "../components/ui/Card";
-import DataTable from "../components/ui/DataTable";
-import Button from "../components/ui/Button";
-import Modal from "../components/ui/Modal";
-import AddUserGroupForm from "../components/forms/AddUserGroupForm";
-import EditUserGroupForm from "../components/forms/EditUserGroupForm";
-import ManageGroupPermissionsForm from "../components/forms/ManageGroupPermissionsForm";
-import type { UserGroup, Pagination } from "../types/models";
+import Card from "../components/ui/Card.tsx";
+import DataTable from "../components/ui/DataTable.tsx";
+import Button from "../components/ui/Button.tsx";
+import Modal from "../components/ui/Modal.tsx";
+import AddUserGroupForm from "../components/forms/AddUserGroupForm.tsx";
+import EditUserGroupForm from "../components/forms/EditUserGroupForm.tsx";
+import ManageGroupPermissionsForm from "../components/forms/ManageGroupPermissionsForm.tsx";
+import type { UserGroup, Pagination } from "../types/models.ts";
 import {
   getAllUserGroups,
   deleteUserGroup,
-} from "../services/userGroupService";
+} from "../services/userGroupService.ts";
 
 const UserGroups = () => {
   const [userGroups, setUserGroups] = useState<UserGroup[]>([]);
@@ -32,6 +31,7 @@ const UserGroups = () => {
       setIsLoading(true);
       const response = await getAllUserGroups(page, size);
       setUserGroups(response.data);
+
       setPagination(
         response.pagination || { page, size, total: response.data.length }
       );
@@ -55,7 +55,9 @@ const UserGroups = () => {
   };
 
   const handleDeleteUserGroup = async (userGroupId: string) => {
-    if (window.confirm("Are you sure you want to delete this user group?")) {
+    if (
+      globalThis.confirm("Are you sure you want to delete this user group?")
+    ) {
       try {
         await deleteUserGroup(userGroupId);
         fetchUserGroups(pagination.page || 1, pagination.size || 10);
@@ -103,10 +105,7 @@ const UserGroups = () => {
     },
     {
       header: "Created At",
-      accessor: (userGroup: UserGroup) =>
-        userGroup.created_at
-          ? new Date(userGroup.created_at).toLocaleString()
-          : "-",
+      accessor: (userGroup: UserGroup) => userGroup.created_at,
     },
     {
       header: "Users",

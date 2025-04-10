@@ -1,17 +1,16 @@
 import { useEffect, useState, useCallback } from "react";
-import React from "react";
-import { FiEdit2, FiTrash2, FiPlus } from "react-icons/fi";
-import Card from "../components/ui/Card";
-import DataTable from "../components/ui/DataTable";
-import Button from "../components/ui/Button";
-import Modal from "../components/ui/Modal";
-import AddPermissionForm from "../components/forms/AddPermissionForm";
-import EditPermissionForm from "../components/forms/EditPermissionForm";
-import type { Permission, Pagination } from "../types/models";
+import { FiEdit2, FiPlus, FiTrash2 } from "react-icons/fi";
+import Card from "../components/ui/Card.tsx";
+import DataTable from "../components/ui/DataTable.tsx";
+import Button from "../components/ui/Button.tsx";
+import Modal from "../components/ui/Modal.tsx";
+import AddPermissionForm from "../components/forms/AddPermissionForm.tsx";
+import EditPermissionForm from "../components/forms/EditPermissionForm.tsx";
+import type { Permission, Pagination } from "../types/models.ts";
 import {
   getAllPermissions,
   deletePermission,
-} from "../services/permissionService";
+} from "../services/permissionService.ts";
 
 const Permissions = () => {
   const [permissions, setPermissions] = useState<Permission[]>([]);
@@ -31,6 +30,7 @@ const Permissions = () => {
       setIsLoading(true);
       const response = await getAllPermissions(page, size);
       setPermissions(response.data);
+
       setPagination(
         response.pagination || { page, size, total: response.data.length }
       );
@@ -54,7 +54,9 @@ const Permissions = () => {
   };
 
   const handleDeletePermission = async (permissionId: string) => {
-    if (window.confirm("Are you sure you want to delete this permission?")) {
+    if (
+      globalThis.confirm("Are you sure you want to delete this permission?")
+    ) {
       try {
         await deletePermission(permissionId);
         fetchPermissions(pagination.page || 1, pagination.size || 10);
@@ -95,10 +97,7 @@ const Permissions = () => {
     },
     {
       header: "Created At",
-      accessor: (permission: Permission) =>
-        permission.created_at
-          ? new Date(permission.created_at).toLocaleString()
-          : "-",
+      accessor: (permission: Permission) => permission.created_at,
     },
   ];
 
