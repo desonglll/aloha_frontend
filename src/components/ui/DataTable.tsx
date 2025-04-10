@@ -1,11 +1,12 @@
-import { ReactNode, useState } from "react";
+import { type ReactNode, useState } from "react";
 import {
   FiChevronLeft,
   FiChevronRight,
   FiChevronsLeft,
   FiChevronsRight,
 } from "react-icons/fi";
-import { Pagination } from "../../types/models";
+import type { Pagination } from "../../types/models";
+import React from "react";
 
 interface Column<T> {
   header: string;
@@ -71,7 +72,7 @@ const DataTable = <T extends object>({
           <tr>
             {columns.map((column, index) => (
               <th
-                key={index}
+                key={index.toString()}
                 scope="col"
                 className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${
                   column.className || ""
@@ -95,7 +96,7 @@ const DataTable = <T extends object>({
                 className="px-6 py-4 text-center"
               >
                 <div className="flex justify-center">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500" />
                 </div>
               </td>
             </tr>
@@ -115,7 +116,7 @@ const DataTable = <T extends object>({
               <tr key={String(row[keyField])} className="hover:bg-gray-50">
                 {columns.map((column, index) => (
                   <td
-                    key={index}
+                    key={index.toString()}
                     className={`px-6 py-4 whitespace-nowrap text-sm text-gray-500 ${
                       column.className || ""
                     }`}
@@ -138,18 +139,16 @@ const DataTable = <T extends object>({
         <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
           <div className="flex-1 flex justify-between sm:hidden">
             <button
-              onClick={() =>
-                onPageChange && onPageChange((pagination.page || 1) - 1)
-              }
+              type="button"
+              onClick={() => onPageChange?.((pagination.page || 1) - 1)}
               disabled={!pagination.page || pagination.page <= 1}
               className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Previous
             </button>
             <button
-              onClick={() =>
-                onPageChange && onPageChange((pagination.page || 1) + 1)
-              }
+              type="button"
+              onClick={() => onPageChange?.((pagination.page || 1) + 1)}
               disabled={!pagination.next_page}
               className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -182,7 +181,8 @@ const DataTable = <T extends object>({
                 aria-label="Pagination"
               >
                 <button
-                  onClick={() => onPageChange && onPageChange(1)}
+                  type="button"
+                  onClick={() => onPageChange?.(1)}
                   disabled={!pagination.page || pagination.page <= 1}
                   className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -190,9 +190,8 @@ const DataTable = <T extends object>({
                   <FiChevronsLeft className="h-5 w-5" />
                 </button>
                 <button
-                  onClick={() =>
-                    onPageChange && onPageChange((pagination.page || 1) - 1)
-                  }
+                  type="button"
+                  onClick={() => onPageChange?.((pagination.page || 1) - 1)}
                   disabled={!pagination.page || pagination.page <= 1}
                   className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -205,9 +204,8 @@ const DataTable = <T extends object>({
                 </span>
 
                 <button
-                  onClick={() =>
-                    onPageChange && onPageChange((pagination.page || 1) + 1)
-                  }
+                  type="button"
+                  onClick={() => onPageChange?.((pagination.page || 1) + 1)}
                   disabled={!pagination.next_page}
                   className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -216,12 +214,13 @@ const DataTable = <T extends object>({
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => {
                     const totalPages =
                       pagination.total && pagination.size
                         ? Math.ceil(pagination.total / pagination.size)
                         : 1;
-                    onPageChange && onPageChange(totalPages);
+                    onPageChange?.(totalPages);
                   }}
                   disabled={!pagination.next_page}
                   className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"

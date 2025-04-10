@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import { FiSave, FiX } from "react-icons/fi";
-import { CreatePermissionFormData } from "../../types/models";
+import type { CreatePermissionFormData } from "../../types/models";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { createPermission } from "../../services/permissionService";

@@ -7,7 +7,7 @@ export const API_ENDPOINTS = {
     GET_ALL: "/api/users",
     GET_BY_ID: (id: string) => `/api/users/${id}`,
     CREATE: "/api/users",
-    UPDATE: (id: string) => `/api/users/${id}`,
+    UPDATE: "/api/users",
     DELETE: (id: string) => `/api/users/${id}`,
     DELETE_MULTIPLE: "/api/users",
   },

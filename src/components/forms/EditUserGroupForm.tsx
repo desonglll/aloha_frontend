@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import { FiSave, FiX } from "react-icons/fi";
-import { UserGroup } from "../../types/models";
+import type { UserGroup } from "../../types/models";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { updateUserGroup } from "../../services/userGroupService";

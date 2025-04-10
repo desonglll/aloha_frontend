@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
+import { useState } from "react";
 import { FiSave, FiX } from "react-icons/fi";
-import { Permission } from "../../types/models";
+import type { Permission } from "../../types/models";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { updatePermission } from "../../services/permissionService";
@@ -17,6 +18,7 @@ const EditPermissionForm: React.FC<EditPermissionFormProps> = ({
   onCancel,
 }) => {
   const [formData, setFormData] = useState({
+    id: permission.id,
     name: permission.name,
     description: permission.description || "",
   });

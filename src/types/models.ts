@@ -17,6 +17,7 @@ export interface CreateUserFormData {
 }
 
 export interface UpdateUserFormData {
+  id: string;
   username: string;
   password?: string | null;
   user_group_id?: string | null;

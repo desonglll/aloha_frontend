@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useState, useEffect } from "react";
 import { FiSave, FiX } from "react-icons/fi";
-import { CreateUserFormData, UserGroup } from "../../types/models";
+import type { CreateUserFormData, UserGroup } from "../../types/models";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { getAllUserGroups } from "../../services/userGroupService";

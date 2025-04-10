@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useState, useEffect } from "react";
 import { FiSave, FiX } from "react-icons/fi";
-import { UpdateUserFormData, User, UserGroup } from "../../types/models";
+import type { UpdateUserFormData, User, UserGroup } from "../../types/models";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { getAllUserGroups } from "../../services/userGroupService";
@@ -18,6 +19,7 @@ const EditUserForm: React.FC<EditUserFormProps> = ({
   onCancel,
 }) => {
   const [formData, setFormData] = useState<UpdateUserFormData>({
+    id: user.id,
     username: user.username,
     password: null,
     user_group_id: user.user_group_id || null,
@@ -84,7 +86,9 @@ const EditUserForm: React.FC<EditUserFormProps> = ({
 
     try {
       setIsLoading(true);
-      await updateUser(user.id, formData);
+      console.log(formData);
+
+      await updateUser(formData);
       onSuccess();
     } catch (error) {
       console.error("Failed to update user:", error);

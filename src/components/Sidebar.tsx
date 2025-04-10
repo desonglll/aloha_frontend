@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router";
 import {
   FiHome,
   FiUsers,
@@ -7,6 +7,7 @@ import {
   FiMenu,
   FiX,
 } from "react-icons/fi";
+import React from "react";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -32,6 +33,8 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
         <div
           className="fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity md:hidden"
           onClick={toggleSidebar}
+          onKeyUp={(e) => e.key === "Escape" && toggleSidebar()}
+          onKeyDown={(e) => e.key === "Escape" && toggleSidebar()}
         />
       )}
 
@@ -44,6 +47,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <span className="text-xl font-semibold text-blue-600">Aloha</span>
           <button
+            type="button"
             onClick={toggleSidebar}
             className="p-1 rounded-full hover:bg-gray-100 md:hidden"
           >

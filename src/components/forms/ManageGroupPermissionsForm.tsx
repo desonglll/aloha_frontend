@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useState, useEffect } from "react";
 import { FiSave, FiX } from "react-icons/fi";
-import {
+import type {
   Permission,
   UserGroup,
   CreateGroupPermissionFormData,

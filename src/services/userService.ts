@@ -1,6 +1,6 @@
 import api from "./api";
 import { API_ENDPOINTS } from "../config/api.config";
-import {
+import type {
   User,
   CreateUserFormData,
   UpdateUserFormData,
@@ -40,10 +40,9 @@ export const createUser = async (
  * Update existing user
  */
 export const updateUser = async (
-  id: string,
   userData: UpdateUserFormData
 ): Promise<User> => {
-  return api.put(API_ENDPOINTS.USERS.UPDATE(id), userData);
+  return api.put(API_ENDPOINTS.USERS.UPDATE, userData);
 };
 
 /**

@@ -23,15 +23,14 @@ export const getAllGroupPermissions = (
     return api.get(
       API_ENDPOINTS.GROUP_PERMISSIONS.GET_BY_GROUP(params.groupId)
     );
-  } else if (params?.permissionId) {
+  }if (params?.permissionId) {
     return api.get(
       API_ENDPOINTS.GROUP_PERMISSIONS.GET_BY_PERMISSION(params.permissionId)
     );
-  } else {
+  }
     return api.get(API_ENDPOINTS.GROUP_PERMISSIONS.GET_ALL, {
       params: { page: params?.page, size: params?.size },
     });
-  }
 };
 
 /**

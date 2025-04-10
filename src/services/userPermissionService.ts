@@ -21,15 +21,14 @@ export const getAllUserPermissions = (
 ): Promise<ApiResponse<UserPermission[]>> => {
   if (params?.userId) {
     return api.get(API_ENDPOINTS.USER_PERMISSIONS.GET_BY_USER(params.userId));
-  } else if (params?.permissionId) {
+  }if (params?.permissionId) {
     return api.get(
       API_ENDPOINTS.USER_PERMISSIONS.GET_BY_PERMISSION(params.permissionId)
     );
-  } else {
+  }
     return api.get(API_ENDPOINTS.USER_PERMISSIONS.GET_ALL, {
       params: { page: params?.page, size: params?.size },
     });
-  }
 };
 
 /**
