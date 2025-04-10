@@ -1,53 +1,85 @@
-import React from "react";
-import { Link, useLocation } from "npm:react-router-dom@^6.22.1";
+import { useState } from "react";
+import { FiMenu, FiBell, FiSearch } from "react-icons/fi";
 
-const Navbar: React.FC = () => {
-  const location = useLocation();
+interface NavbarProps {
+  toggleSidebar: () => void;
+}
 
-  const isActive = (path: string) => {
-    return location.pathname === path
-      ? "bg-blue-700 text-white"
-      : "text-blue-200 hover:bg-blue-600 hover:text-white";
-  };
+const Navbar = ({ toggleSidebar }: NavbarProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-blue-500 shadow-md z-50">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/" className="text-white font-bold text-xl">
-              Aloha Admin
-            </Link>
-          </div>
-          <div className="flex items-center">
-            <Link
-              to="/"
-              className={`px-3 py-2 rounded-md text-sm font-medium ${isActive(
-                "/"
-              )}`}
-            >
-              Home
-            </Link>
-            <Link
-              to="/user-groups"
-              className={`px-3 py-2 rounded-md text-sm font-medium ${isActive(
-                "/user-groups"
-              )}`}
-            >
-              User Groups
-            </Link>
-            <Link
-              to="/users"
-              className={`px-3 py-2 rounded-md text-sm font-medium ${isActive(
-                "/users"
-              )}`}
-            >
-              Users
-            </Link>
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div className="px-4 py-3 flex items-center justify-between">
+        {/* Left section */}
+        <div className="flex items-center">
+          <button
+            type="button"
+            className="p-2 rounded-full text-gray-500 hover:bg-gray-100 md:hidden"
+            onClick={toggleSidebar}
+            aria-label="Toggle sidebar"
+          >
+            <FiMenu size={20} />
+          </button>
+        </div>
+
+        {/* Search bar - center on large screens, full width on mobile */}
+        <div className="w-full max-w-lg hidden md:block mx-auto">
+          <div className="relative text-gray-500 focus-within:text-blue-600">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FiSearch size={18} />
+            </div>
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full bg-gray-100 text-gray-900 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              placeholder="Search..."
+            />
           </div>
         </div>
+
+        {/* Right section */}
+        <div className="flex items-center space-x-4">
+          {/* Notifications */}
+          <button
+            type="button"
+            className="relative p-2 rounded-full text-gray-500 hover:bg-gray-100"
+            aria-label="View notifications"
+          >
+            <FiBell size={20} />
+            <span className="absolute top-0 right-0 block h-4 w-4 bg-red-500 rounded-full text-xs text-white font-bold flex items-center justify-center">
+              3
+            </span>
+          </button>
+
+          {/* Mobile search button */}
+          <button
+            type="button"
+            className="p-2 rounded-full text-gray-500 hover:bg-gray-100 md:hidden"
+            aria-label="Search"
+          >
+            <FiSearch size={20} />
+          </button>
+        </div>
       </div>
-    </nav>
+
+      {/* Mobile search bar */}
+      <div className="px-4 py-2 md:hidden">
+        <div className="relative text-gray-500 focus-within:text-blue-600">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <FiSearch size={18} />
+          </div>
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full bg-gray-100 text-gray-900 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            placeholder="Search..."
+          />
+        </div>
+      </div>
+    </header>
   );
 };
 

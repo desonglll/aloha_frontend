@@ -1,94 +1,62 @@
-import { User, UserFormData, UserListResponse } from "../types/user.ts";
-import { UUID } from "../types/common.ts";
-import { API_CONFIG, buildUrl } from "../config/api.ts";
+import api from "./api";
+import { API_ENDPOINTS } from "../config/api.config";
+import type {
+  User,
+  CreateUserFormData,
+  UpdateUserFormData,
+  ApiResponse,
+} from "../types/models";
 
-export const userService = {
-  async fetchUsers(page: number, size: number): Promise<UserListResponse> {
-    const response = await fetch(
-      buildUrl(API_CONFIG.endpoints.users, { page, size }),
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+/**
+ * Get all users with optional pagination and sorting
+ */
+export const getAllUsers = async (
+  page?: number,
+  size?: number,
+  sort?: string,
+  order?: "asc" | "desc"
+): Promise<ApiResponse<User[]>> => {
+  const params = { page, size, sort, order };
+  return api.get(API_ENDPOINTS.USERS.GET_ALL, { params });
+};
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch users: ${response.statusText}`);
-    }
+/**
+ * Get user by ID
+ */
+export const getUserById = async (id: string): Promise<User> => {
+  return api.get(API_ENDPOINTS.USERS.GET_BY_ID(id));
+};
 
-    return await response.json();
-  },
+/**
+ * Create new user
+ */
+export const createUser = async (
+  userData: CreateUserFormData
+): Promise<User> => {
+  return api.post(API_ENDPOINTS.USERS.CREATE, userData);
+};
 
-  async fetchUserById(id: UUID): Promise<User> {
-    const response = await fetch(
-      buildUrl(`${API_CONFIG.endpoints.user}/${id}`),
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+/**
+ * Update existing user
+ */
+export const updateUser = async (
+  userData: UpdateUserFormData
+): Promise<User> => {
+  return api.put(API_ENDPOINTS.USERS.UPDATE, userData);
+};
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch user: ${response.statusText}`);
-    }
+/**
+ * Delete user
+ */
+export const deleteUser = async (id: string): Promise<User> => {
+  return api.delete(API_ENDPOINTS.USERS.DELETE(id));
+};
 
-    return await response.json();
-  },
-
-  async createUser(user: UserFormData): Promise<User> {
-    const response = await fetch(buildUrl(API_CONFIG.endpoints.user), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to create user: ${response.statusText}`);
-    }
-
-    return await response.json();
-  },
-
-  async updateUser(id: UUID, user: UserFormData): Promise<User> {
-    const response = await fetch(
-      buildUrl(`${API_CONFIG.endpoints.user}/${id}`),
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to update user: ${response.statusText}`);
-    }
-
-    return await response.json();
-  },
-
-  async deleteUser(id: UUID): Promise<User> {
-    const response = await fetch(
-      buildUrl(`${API_CONFIG.endpoints.user}/${id}`),
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to delete user: ${response.statusText}`);
-    }
-
-    return await response.json();
-  },
+/**
+ * Delete multiple users
+ */
+export const deleteMultipleUsers = async (
+  userIds: string[]
+): Promise<number> => {
+  return api.delete(API_ENDPOINTS.USERS.DELETE_MULTIPLE, { data: userIds });
 };

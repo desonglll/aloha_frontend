@@ -1,71 +1,31 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useLocation,
-} from "react-router-dom";
-import { AnimatePresence } from "npm:framer-motion@^11.0.8";
-import Navbar from "./components/Navbar.tsx";
-import Home from "./pages/Home.tsx";
-import About from "./pages/About.tsx";
-import UserGroups from "./pages/UserGroups.tsx";
-import HealthCheck from "./components/HealthCheck.tsx";
-import PageTransition from "./components/PageTransition.tsx";
-import Users from "./pages/Users.tsx";
+import { BrowserRouter, Routes, Route } from "react-router";
+import { Suspense, lazy } from "react";
+import React from "react";
+import Layout from "./components/Layout";
+import Loading from "./components/Loading";
 
-// Wrapper component to use useLocation hook
-const AnimatedRoutes = () => {
-  const location = useLocation();
-
-  return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route
-          path="/"
-          element={
-            <PageTransition>
-              <Home />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <PageTransition>
-              <About />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/user-groups"
-          element={
-            <PageTransition>
-              <UserGroups />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/users"
-          element={
-            <PageTransition>
-              <Users />
-            </PageTransition>
-          }
-        />
-      </Routes>
-    </AnimatePresence>
-  );
-};
+// Lazy-loaded pages
+const Home = lazy(() => import("./pages/Home"));
+const Users = lazy(() => import("./pages/Users"));
+const UserGroups = lazy(() => import("./pages/UserGroups"));
+const Permissions = lazy(() => import("./pages/Permissions"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-100 overflow-y-scroll">
-        <Navbar />
-        <AnimatedRoutes />
-        <HealthCheck />
-      </div>
-    </Router>
+    <BrowserRouter>
+      <Layout>
+        <Suspense fallback={<Loading />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/user-groups" element={<UserGroups />} />
+            <Route path="/permissions" element={<Permissions />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </Layout>
+    </BrowserRouter>
   );
 }
 
