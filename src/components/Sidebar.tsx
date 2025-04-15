@@ -6,6 +6,7 @@ import {
   FiLock,
   FiMenu,
   FiX,
+  FiMessageSquare,
 } from "react-icons/fi";
 import React from "react";
 
@@ -22,6 +23,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
     { name: "Users", path: "/users", icon: FiUsers },
     { name: "User Groups", path: "/user-groups", icon: FiUserCheck },
     { name: "Permissions", path: "/permissions", icon: FiLock },
+    { name: "Tweets", path: "/tweets", icon: FiMessageSquare },
   ];
 
   const isActive = (path: string) => location.pathname === path;

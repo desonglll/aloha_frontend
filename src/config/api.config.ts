@@ -60,4 +60,14 @@ export const API_ENDPOINTS = {
 
   // Health Check
   HEALTH: "/health",
+
+  // Tweets
+  TWEETS: {
+    GET_ALL: "/api/tweets",
+    GET_BY_ID: (id: string) => `/api/tweets/${id}`,
+    CREATE: "/api/tweets",
+    UPDATE: (id: string) => `/api/tweets/${id}`,
+    DELETE: (id: string) => `/api/tweets/${id}`,
+    DELETE_MULTIPLE: "/api/tweets",
+  },
 };

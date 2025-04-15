@@ -93,3 +93,22 @@ export interface DatabaseError {
 }
 
 export type AlohaError = DatabaseError;
+
+// Tweet models
+export interface Tweet {
+  id: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+}
+
+export interface CreateTweetFormData {
+  content: string;
+  user_id: string;
+}
+
+export interface UpdateTweetFormData {
+  id: string;
+  content: string;
+}
