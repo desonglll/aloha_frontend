@@ -32,7 +32,6 @@ const AddTweetForm = ({
 
       await createTweet({
         content,
-        user_id: currentUser.id,
       });
 
       setContent("");

@@ -23,8 +23,8 @@ const Tweets = () => {
   const [selectedTweet, setSelectedTweet] = useState<Tweet | null>(null);
   // Temporarily using a mock current user - in a real app this would come from auth context
   const [currentUser] = useState<User>({
-    id: "00000000-0000-0000-0000-000000000000",
-    username: "current_user",
+    id: localStorage.getItem("user_id") || "",
+    username: localStorage.getItem("username") || "",
   });
   const [tweetUsers, setTweetUsers] = useState<Record<string, User>>({});
 

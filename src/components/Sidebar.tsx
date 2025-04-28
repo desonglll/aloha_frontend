@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import {
   FiHome,
   FiUsers,
@@ -7,16 +7,36 @@ import {
   FiMenu,
   FiX,
   FiMessageSquare,
+  FiLogOut,
 } from "react-icons/fi";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { logout, getCurrentUser } from "../services/authService";
 
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
 }
 
+interface UserInfo {
+  user_id: string | null;
+  username: string | null;
+  user_group_id: string | null;
+}
+
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState<UserInfo>({
+    user_id: null,
+    username: null,
+    user_group_id: null,
+  });
+
+  useEffect(() => {
+    // Get user info from localStorage
+    const currentUser = getCurrentUser();
+    setUserInfo(currentUser);
+  }, []);
 
   const navItems = [
     { name: "Home", path: "/", icon: FiHome },
@@ -27,6 +47,16 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
+  // Get first letter of username for avatar
+  const getInitial = () => {
+    return userInfo.username ? userInfo.username.charAt(0).toUpperCase() : "A";
+  };
 
   return (
     <>
@@ -85,17 +115,25 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
           <div className="flex items-center space-x-3">
             <div className="flex-shrink-0">
               <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-                A
+                {getInitial()}
               </div>
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 truncate">
-                Admin User
+                {userInfo.username || "User"}
               </p>
               <p className="text-xs text-gray-500 truncate">
-                admin@example.com
+                {userInfo.user_id ? `ID: ${userInfo.user_id}` : "Not logged in"}
               </p>
             </div>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="p-2 rounded-full hover:bg-gray-100 text-gray-500 hover:text-red-500"
+              title="Logout"
+            >
+              <FiLogOut size={18} />
+            </button>
           </div>
         </div>
       </div>

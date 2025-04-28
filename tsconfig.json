@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "target": "ESNext",
+    // 支持最新 JavaScript 特性
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    // 开启严格模式，建议一定开
+    "jsx": "react-jsx",
+    // 适配 React 17+ 的 JSX 运行时
+    "esModuleInterop": true,
+    // 允许默认导入 CommonJS 模块
+    "skipLibCheck": true,
+    // 跳过库文件检查，加快编译
+    "forceConsistentCasingInFileNames": true,
+    // 保证文件名大小写一致
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "baseUrl": ".",
+    // 配置路径别名要这个
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+      // 这样你就可以用 @/components/xxx 这种绝对路径了
+    }
+  },
+  "include": [
+    "src"
+  ],
+  // 只编译 src 目录
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+  // 排除 node_modules 和打包产物
+}

@@ -105,7 +105,6 @@ export interface Tweet {
 
 export interface CreateTweetFormData {
   content: string;
-  user_id: string;
 }
 
 export interface UpdateTweetFormData {
